@@ -1,0 +1,96 @@
+<script>
+	var cursor = document.createElement("cursor");
+	var cursorPosition = [window.innerWidth/2, window.innerHeight/2];
+	var keys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "!", "@", "#", "$", "%", "&"];
+	var caps = 0;
+	var focused = false;
+	var functions = {};
+
+	document.body.append(cursor);
+
+	document.body.addEventListener("mousemove", function(event){
+		if(!focused) return;
+		cursorPosition[0] = Math.max(0, Math.min(window.innerWidth, cursorPosition[0] + event.movementX));
+		cursorPosition[1] = Math.max(0, Math.min(window.innerHeight, cursorPosition[1] + event.movementY));
+		var elem = document.elementFromPoint(...cursorPosition);
+
+		if(!elem?.classList?.contains("selectable") || elem?.classList?.contains("nohover")){
+			cursor.style.setProperty("--width", "4vh");
+			cursor.style.setProperty("--height", "4vh");
+			cursor.style.setProperty("--border-radius", "50%");
+			return setPosition();
+		}
+
+		var rect = elem.getBoundingClientRect();
+		var width = rect.right - rect.left;
+		var height = rect.bottom - rect.top;
+		cursor.style.setProperty("--width", `${width}px`);
+		cursor.style.setProperty("--height", `${height}px`);
+		cursor.style.setProperty("--border-radius", getComputedStyle(document.querySelector(`#${elem.id}`))["border-radius"]);
+
+		setPosition(rect.left + rect.width/2, rect.top + rect.height/2);
+	});
+
+	document.body.addEventListener("click", async function(){
+		if(!focused){
+			await document.body.requestPointerLock();
+			focused = true;
+			return;
+		}
+
+		var elem = document.elementFromPoint(...cursorPosition);
+		if(!elem?.classList?.contains("selectable")) return;
+		
+		if(functions[elem.id]) functions[elem.id]();
+	});
+
+	document.body.addEventListener("mousedown", function(){
+		var elem = document.getElementById(document.elementFromPoint(...cursorPosition).id);
+		if(!elem?.classList?.contains("selectable")) return;
+		if(!elem?.classList?.contains("noclick")){
+			var temp = elem.style.background;
+			elem.style.background = "rgba(255, 255, 255, 0.6)";
+			document.body.addEventListener("mouseup", function(){
+				elem.style.background = temp;
+			});
+		}
+	});
+
+	document.addEventListener("pointerlockchange", function(){
+		if(document.pointerLockElement != document.body) focused = false;
+	});
+
+	setPosition();
+	drawKeys();
+
+	functions = {
+		search: () => document.getElementById("search").focus(),
+		k42: () => {
+			caps = (caps + 1) % 3;
+			drawKeys();
+		},
+		k43: () => document.getElementById("search").value += " ",
+		k44: () => document.getElementById("search").value = document.getElementById("search").value.slice(0, -1)
+	}
+
+	for(var i = 0; i < keys.length; i++) functions[`k${i}`] = generateKeyFunction(i);
+	
+	function generateKeyFunction(i){
+		return function(){
+			document.getElementById("search").value += caps ? keys[i].toUpperCase() : keys[i];
+			if(caps == 1) caps--;
+			drawKeys();
+		}
+	}
+
+	function setPosition(x, y){
+		cursor.style.left = `${x || cursorPosition[0]}px`;
+		cursor.style.top = `${y || cursorPosition[1]}px`;
+	}
+
+	function drawKeys(){
+		var keyelems = document.querySelectorAll("key");
+		for(var i = 0; i < keys.length; i++) keyelems[i].innerText = caps ? keys[i].toUpperCase() : keys[i];
+		keyelems[42].innerText = ["Shift", "Capslock", "Unlock Caps"][caps];
+	}
+</script>

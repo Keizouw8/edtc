@@ -1,0 +1,98 @@
+<style>
+	@font-face {
+		font-family: "lexend";
+		src: url("/static/lexend.ttf");
+	}
+	*{
+		--primary: rgb(30, 30, 30);
+		--secondary: rgb(40, 40, 40);
+		--tertiary: rgb(93, 89, 134);
+		padding: 0;
+		margin: 0;
+		font-family: "lexend";
+		pointer-events: none;
+		cursor: none;
+	}
+	body, html{
+		user-select: none;
+		background: var(--primary);
+		color: white;	
+		overflow: hidden;
+	}
+	.selectable{
+		pointer-events: all;
+	}
+
+	cursor{
+		--width: 4vh;
+		--height: 4vh;
+		--border-radius: 50%;
+		transition: all 0s, border-radius 0.2s, width 0.2s, height 0.2s;
+		position: absolute;
+		transform: translate(-50%, -50%);
+		height: var(--height);
+		width: var(--width);
+		border-radius: var(--border-radius);
+		background: radial-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3));
+		border: 0.4vh white solid;
+	}
+
+	search{
+		transition: 1s;
+		position: absolute;
+		height: 100vw;
+		width: 40vw;
+		top: 0;
+		left: -40vw;
+		background: var(--secondary);
+	}
+	search[collapsed="false"]{
+		left: 0vw;
+	}
+
+	search > input#search{
+		transition: background 0.1s;
+		position: relative;
+		background: var(--primary);
+		border: none;
+		border-bottom: 0.1vw white solid;
+		width: 35vw;
+		margin-left: 2vw;
+		margin-top: 2vw;
+		padding: 0.5vw;
+		font-size: 1.5vw;
+		border-radius: 0.3vw;
+		color: white;
+	}
+
+	search > input#search::placeholder{
+		color: white;
+	}
+
+	search > input#search:focus{
+		outline: none;
+	}
+
+	keypad{
+		margin-top: 1vw;
+		margin-left: 1.7vw;
+		display: flex;
+		flex-flow: row wrap;
+		width: 36.6vw;
+		height: 48.8vw;
+	}
+
+	key{
+		transition: background 0.1s;
+		background: var(--primary);
+		width: 5.5vw;
+		height: 5.5vw;
+		margin: 0.3vw;
+		border-radius: 0.3vw;
+		box-shadow: inset 0 0 0 0.3vw var(--tertiary);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 1.5vw;
+	}
+</style>

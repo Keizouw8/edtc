@@ -1,0 +1,14 @@
+<%- include("head.ejs") %>
+	<search collapsed="false">
+		<input type="text" placeholder="Search" class="selectable" id="search" autocomplete="off">
+		<keypad>
+			<% for(var i = 0; i < 42; i++){ %>
+				<key class="selectable" id="k<%= i %>"></key>
+			<% } %>
+			<key class="selectable" id="k42" style="width: 11.6vw;">Shift</key>
+			<key class="selectable" id="k43" style="width: 17.7vw;">Space</key>
+			<key class="selectable" id="k44"><i class="fa-solid fa-delete-left"></i></key>
+		</keypad>
+	</search>
+	<button>asdf</button>
+<%- include("feet.ejs") %>
