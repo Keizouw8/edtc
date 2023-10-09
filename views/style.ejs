@@ -23,21 +23,88 @@
 		pointer-events: all;
 	}
 
+	@property --gradient-x{
+		syntax: '<percentage>';
+		initial-value: 50%;
+		inherits: false;
+	}
+	@property --gradient-y{
+		syntax: '<percentage>';
+		initial-value: 50%;
+		inherits: false;
+	}
+	@property --gradient-inner{
+		syntax: '<color>';
+		initial-value: rgba(255, 255, 255, 0.15);
+		inherits: false;
+	}
+	@property --gradient-outer{
+		syntax: '<color>';
+		initial-value: rgba(255, 255, 255, 0.3);
+		inherits: false;
+	}
+	@property --gradient-speed{
+		syntax: '<time>';
+		initial-value: 3s;
+		inherits: false;
+	}
 	cursor{
 		--width: 4vh;
 		--height: 4vh;
 		--border-radius: 50%;
-		transition: all 0s, border-radius 0.2s, width 0.2s, height 0.2s;
+		transition: all 0s, border-radius 0.2s, width 0.2s, height 0.2s, --gradient-inner var(--gradient-speed) linear, --gradient-outer var(--gradient-speed) linear, --gradient-x var(--gradient-speed) linear, --gradient-y var(--gradient-speed) linear;
+		background: radial-gradient(farthest-corner at var(--gradient-x) var(--gradient-y), var(--gradient-inner), var(--gradient-outer));
 		position: absolute;
 		transform: translate(-50%, -50%);
 		height: var(--height);
 		width: var(--width);
 		border-radius: var(--border-radius);
-		background: radial-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.3));
 		border: 0.4vh white solid;
+		z-index: 101;
+	}
+
+	header{
+		z-index: 99;
+		position: absolute;
+		top: 0;
+		left: 0;
+		transform: translateY(0%);
+		width: 100vw;
+		height: 7vw;
+		background: var(--secondary);
+		opacity: 1;
+		transition: 1s;
+	}
+
+	header > home{
+		background: var(--tertiary);
+		position: absolute;
+		left: 6vw;
+		top: 2vw;
+		width: 3vw;
+		height: 3vw;
+		border-radius: 0.3vw;
+	}
+
+	header > home > i{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 1.5vw;
+	}
+
+	header > h1.title{
+		position: absolute;
+		left: 10.5vw;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 2vw;
+		font-weight: 900;
 	}
 
 	search{
+		z-index: 100;
 		transition: 1s;
 		position: absolute;
 		height: 100vw;
@@ -45,9 +112,39 @@
 		top: 0;
 		left: -40vw;
 		background: var(--secondary);
+		overflow: visible;
+	}
+	search > toggle{
+		background: var(--tertiary);
+		transition: 1s;
+		position: absolute;
+		right: -5vw;
+		top: 2vw;
+		width: 3vw;
+		height: 3vw;
+		border-radius: 0.3vw;
+	}
+	search > toggle > i{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		transition: 1s;
+		background: var(--tertiary);
+		opacity: 1;
 	}
 	search[collapsed="false"]{
 		left: 0vw;
+	}
+	search[collapsed="false"] + header{
+		transform: translateY(-100%);
+		opacity: 0;
+	}
+	search[collapsed="false"] > toggle{
+		right: 2vw;
+	}
+	search[collapsed="false"] > toggle > i.search{
+		opacity: 0;
 	}
 
 	search > input#search{
@@ -56,7 +153,7 @@
 		background: var(--primary);
 		border: none;
 		border-bottom: 0.1vw white solid;
-		width: 35vw;
+		width: 31vw;
 		margin-left: 2vw;
 		margin-top: 2vw;
 		padding: 0.5vw;

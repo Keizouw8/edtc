@@ -1,14 +1,23 @@
 <%- include("head.ejs") %>
-	<search collapsed="false">
-		<input type="text" placeholder="Search" class="selectable" id="search" autocomplete="off">
-		<keypad>
-			<% for(var i = 0; i < 42; i++){ %>
-				<key class="selectable" id="k<%= i %>"></key>
+<search collapsed="true">
+	<toggle class="selectable" id="toggle">
+		<i class="close fa-solid fa-xmark" style="font-size: 1.75vw;"></i>
+		<i class="search fa-solid fa-magnifying-glass" style="font-size: 1.25vw"></i>
+	</toggle>
+	<input type="text" placeholder="Search" class="selectable" id="search" spellcheck="false" autocomplete="off">
+	<keypad>
+		<% for(var i = 0; i < 42; i++){ %>
+			<key class="selectable" id="k<%= i %>"></key>
 			<% } %>
 			<key class="selectable" id="k42" style="width: 11.6vw;">Shift</key>
 			<key class="selectable" id="k43" style="width: 17.7vw;">Space</key>
 			<key class="selectable" id="k44"><i class="fa-solid fa-delete-left"></i></key>
 		</keypad>
 	</search>
-	<button>asdf</button>
+	<header>
+		<home class="selectable" id="home">
+			<i class="fa-solid fa-house"></i>
+		</home>
+		<h1 class="title">Every Day Television Client</h1>
+	</header>
 <%- include("feet.ejs") %>
