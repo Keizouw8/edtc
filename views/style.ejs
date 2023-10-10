@@ -7,11 +7,13 @@
 		--primary: rgb(30, 30, 30);
 		--secondary: rgb(40, 40, 40);
 		--tertiary: rgb(93, 89, 134);
+		--fourth: rgb(50, 50, 50);
 		padding: 0;
 		margin: 0;
 		font-family: "lexend";
 		pointer-events: none;
 		cursor: none;
+		overflow: hidden;
 	}
 	body, html{
 		user-select: none;
@@ -133,10 +135,36 @@
 		background: var(--tertiary);
 		opacity: 1;
 	}
+
+	content{
+		transition: 1s;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		height: calc(100vh - 7vw);
+		width: 100vw;
+	}
+
+	content > container {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		height: calc(100% - 1.25vw);
+		width: calc(100% - 1.25vw);
+	}
+
 	search[collapsed="false"]{
 		left: 0vw;
 	}
-	search[collapsed="false"] + header{
+	search[collapsed="false"] ~ content{
+		height: 100vh;
+		width: 60vw;
+	}
+	search[collapsed="false"] ~ content > container{
+		height: calc(100% - 0.8vw);
+		width: calc(100% - 0.8vw);
+	}
+	search[collapsed="false"] ~ header{
 		transform: translateY(-100%);
 		opacity: 0;
 	}
@@ -191,5 +219,79 @@
 		justify-content: center;
 		align-items: center;
 		font-size: 1.5vw;
+	}
+
+	content > container > card {
+		position: relative;
+		border-radius: 0.3vw;
+		display: inline-block;
+		margin: 0.4vw;
+		background: var(--fourth);
+		width: 18.5vw;
+		height: 15vw;
+	}
+
+	content > container > card > img{
+		position: absolute;
+		top: 0;
+		left: 0;
+		object-fit: cover;
+		width: 18.5vw;
+		height: calc(333vw / 32);
+		background: white;
+	}
+	content > container > card > text {
+		position: absolute;
+		top: calc(357vw / 32);
+		left: 0.75vw;
+		width: 17vw;
+		font-size: 1.25vw;
+	}
+	content > container > card > text > subtitle {
+		font-style: italic;
+		font-size: 1vw;
+		color: rgb(200, 200, 200);
+	}
+
+	.lds-ring {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 5vw;
+		height: 5vw;
+		opacity: 1;
+	}
+	.lds-ring[active="0"] {
+		opacity: 0;
+	}
+	.lds-ring div {
+		box-sizing: border-box;
+		display: block;
+		position: absolute;
+		width: 4vw;
+		height: 4vw;
+		margin: 0.5vw;
+		border: 0.5vw solid #fff;
+		border-radius: 50%;
+		animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+		border-color: #fff transparent transparent transparent;
+	}
+	.lds-ring div:nth-child(1) {
+	animation-delay: -0.45s;
+	}
+	.lds-ring div:nth-child(2) {
+	animation-delay: -0.3s;
+	}
+	.lds-ring div:nth-child(3) {
+	animation-delay: -0.15s;
+	}
+	@keyframes lds-ring {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 	}
 </style>

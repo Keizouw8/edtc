@@ -1,13 +1,26 @@
-import { renderFile } from "ejs";
-import daytona from "daytona";
+const express = require("express");
+const Scraper = require('@yimura/scraper').default;
 
-var app = daytona();
-app.engine("ejs", renderFile);
+const youtube = new Scraper();
+var app = express();
 app.set("view engine", "ejs");
 
-app.use("/static", daytona.static("./static"));
+app.use("/static", express.static("./static"));
+app.post("/yt", async function(req, res){
+    if(!req.query.query) req.query.query = "";
+    console.log(req.query.query)
+    var { videos } = await youtube.search(req.query.query).catch(() => res.json([]));
+    var response = [];
+    for(var i = 0; i < videos.length; i++) response.push({
+        id: videos[i].id,
+        title: videos[i].title,
+        subtitle: videos[i].channel.name,
+        image: videos[i].thumbnail
+    });
+    res.json(response);
+});
 app.get("*", function(req, res){
-    res.render("/index");
+    res.render("index");
 });
 
 app.listen(8080);
