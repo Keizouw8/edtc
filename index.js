@@ -10,6 +10,7 @@ app.post("/yt", async function(req, res){
     if(!req.query.query) req.query.query = "";
     console.log(req.query.query)
     var { videos } = await youtube.search(req.query.query).catch(() => res.json([]));
+    if(!videos) return;
     var response = [];
     for(var i = 0; i < videos.length; i++) response.push({
         id: videos[i].id,
