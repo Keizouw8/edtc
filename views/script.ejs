@@ -3,6 +3,7 @@
 	var cursorPosition = [window.innerWidth/2, window.innerHeight/2];
 	var keys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "!", "@", "#", "$", "%", "&"];
 	var caps = 0;
+	var typing = 0;
 	var loading = 0;
 	var channel = 0;
 	var focused = false;
@@ -20,8 +21,8 @@
 			},
 			functionality(id){
 				channel = id;
-				console.log("here", channel);
 				document.getElementById("search").value = "";
+				document.querySelector("search").setAttribute("collapsed", "true");
 				updateContent();
 			}
 		},
@@ -113,8 +114,11 @@
 			caps = (caps + 1) % 3;
 			drawKeys();
 		},
-		k43: () => document.getElementById("search").value += " ",
-		k44: () => document.getElementById("search").value = document.getElementById("search").value.slice(0, -1),
+		k43: generateKeyFunction(" "),
+		k44: () => {
+			document.getElementById("search").value = document.getElementById("search").value.slice(0, -1);
+			updateContent();
+		},
 		search: () => document.getElementById("search").focus(),
 		toggle: () => document.querySelector("search").setAttribute("collapsed", Boolean(1 - (document.querySelector("search").getAttribute("collapsed") == "true")).toString()),
 		home: () => {
@@ -123,17 +127,29 @@
 			updateContent();
 		}
 	}
-
-	for(var i = 0; i < keys.length; i++) functions[`k${i}`] = generateKeyFunction(i);
 	
-	function generateKeyFunction(i){
+	for(var i = 0; i < keys.length; i++) functions[`k${i}`] = generateKeyFunction(keys[i]);
+	updateContent();
+	
+	function generateKeyFunction(key){
 		return function(){
 			document.getElementById("search").blur();
-			document.getElementById("search").value += caps ? keys[i].toUpperCase() : keys[i];
+			document.getElementById("search").value += caps ? key.toUpperCase() : key;
 			document.getElementById("search").focus();
-			if(caps == 1) caps--;
-			drawKeys();
+			if(caps == 1){
+				caps--;
+				drawKeys();
+			}
+			updateSearch();
 		}
+	}
+
+	function updateSearch(){
+		typing++;
+		setTimeout(function(){
+			typing--;
+			if(!typing) updateContent();
+		}, 300)
 	}
 
 	function setPosition(x, y){
@@ -175,5 +191,4 @@
 		return () => functionality(id);
 	}
 
-	updateContent();
 </script>
