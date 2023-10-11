@@ -46,6 +46,7 @@
 	});
 
 	document.body.addEventListener("mousedown", function(event){
+		if(!focused) return;
 		var elem = document.getElementById(document.elementFromPoint(...cursorPosition).id);
 		if(!elem?.classList?.contains("selectable")) return;
 		if(event.button == 2){
@@ -60,6 +61,19 @@
 				if(event.button != 2) elem.style.background = temp;
 			});
 		}
+	});
+
+	document.body.addEventListener("wheel", function(event){
+		if(!focused) return;
+		volume = Math.max(0, Math.min(100, volume - event.deltaY/50));
+		document.querySelector("volume").style.setProperty("--volume", volume);
+		document.querySelector("volume > text").innerText = parseInt(volume);
+		document.querySelector("volume").setAttribute("show", "1");
+		if(setVolume) clearTimeout(setVolume);
+		setVolume = setTimeout(function(){
+			document.querySelector("volume").setAttribute("show", "0");
+			setVolume = false;
+		}, 1000);
 	});
 
 	document.addEventListener("pointerlockchange", function(){

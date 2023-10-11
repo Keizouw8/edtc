@@ -261,7 +261,6 @@
 		color: rgb(200, 200, 200);
 		white-space:nowrap;
 	}
-
 	.lds-ring {
 		position: absolute;
 		top: 50%;
@@ -269,9 +268,10 @@
 		transform: translate(-50%, -50%);
 		width: 5vw;
 		height: 5vw;
+		transition: 0.3s;
 		opacity: 1;
 	}
-	.lds-ring[active="0"] {
+	.lds-ring[active="0"]{
 		opacity: 0;
 	}
 	.lds-ring div {
@@ -302,5 +302,62 @@
 		100% {
 			transform: rotate(360deg);
 		}
+	}
+
+	volume{
+		transition: 0.3s;
+		position: absolute;
+		right: 1vw;
+		bottom: 1vw;
+		height: 25vw;
+		width: 8vw;
+		background: rgba(0, 0, 0, 0.5);
+		border-radius: 0.3vw;
+		opacity: 1;
+	}
+
+	volume > text {
+		position: absolute;
+		bottom: 1.5vw;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 1.5vw;
+	}
+
+	volume > bar{
+		position: absolute;
+		background: rgb(100, 100, 100);
+		transform: translateX(-50%);
+		left: 50%;
+		top: 3vw;
+		height: 17.5vw;
+		width: 0.3vw;
+		overflow: visible;
+	}
+
+	volume > bar > filled{
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 0.3vw;
+		height: calc(1% * var(--volume));
+		background: var(--tertiary);
+		overflow: visible;
+		transition: 0.1s;
+	}
+
+	volume > bar > filled > end{
+		position: absolute;
+		transform: translate(-50%, -50%);
+		top: 0;
+		left: 50%;
+		width: 1vw;
+		height: 1vw;
+		border-radius: 50%;
+		background: var(--tertiary);
+	}
+
+	volume[show="0"]{
+		opacity: 0;
 	}
 </style>
