@@ -1,0 +1,62 @@
+<script>
+	function generateKeyFunction(key){
+		return function(){
+			document.getElementById("search").blur();
+			document.getElementById("search").value += caps ? key.toUpperCase() : key;
+			document.getElementById("search").focus();
+			if(caps == 1){
+				caps--;
+				drawKeys();
+			}
+			updateSearch();
+		}
+	}
+
+	function updateSearch(){
+		typing++;
+		setTimeout(function(){
+			typing--;
+			if(!typing) updateContent();
+		}, 300)
+	}
+
+	function setPosition(x, y){
+		cursor.style.left = `${x || cursorPosition[0]}px`;
+		cursor.style.top = `${y || cursorPosition[1]}px`;
+	}
+
+	function drawKeys(){
+		var keyelems = document.querySelectorAll("key");
+		for(var i = 0; i < keys.length; i++) keyelems[i].innerText = caps ? keys[i].toUpperCase() : keys[i];
+		keyelems[42].innerText = ["Shift", "Capslock", "Unlock Caps"][caps];
+		keyelems[44].innerHTML = ['<i class="fa-solid fa-delete-left"></i>', '<i class="fa-solid fa-trash"></i>', '<i class="fa-solid fa-trash"></i>'][caps]
+	}
+
+	async function updateContent(){
+		loading++;
+		document.querySelector(".lds-ring").setAttribute("active", "1");
+		document.querySelector("header > h1.title").innerText = channels[channel].title;
+		document.querySelector("content > container").innerHTML = "";
+		var cards = await channels[channel].search(document.getElementById("search").value);
+		for(var i = 0; i < cards.length; i++){
+			functions[`c${cards[i].id}`] = generateCardFunction(channels[channel].functionality, cards[i].id);
+			var card = document.createElement("card");
+			card.id = `c${cards[i].id}`;
+			card.classList.add("selectable", "nohover");
+			var img = document.createElement("img");
+			img.src = cards[i].image;
+			var title = document.createElement("text");
+			title.innerText = cards[i].title;
+			if(cards[i].subtitle) title.innerHTML += `: <subtitle>${cards[i].subtitle}</subtitle>`;
+
+			card.appendChild(img);
+			card.appendChild(title);
+			document.querySelector("content > container").appendChild(card);
+		}
+		if(!--loading) document.querySelector(".lds-ring").setAttribute("active", "0");
+	}
+
+	function generateCardFunction(functionality, id){
+		return () => functionality(id);
+	}
+</script>

@@ -8,7 +8,6 @@ app.set("view engine", "ejs");
 app.use("/static", express.static("./static"));
 app.post("/yt", async function(req, res){
     if(!req.query.query) req.query.query = "";
-    console.log(req.query.query)
     var { videos } = await youtube.search(req.query.query).catch(() => res.json([]));
     if(!videos) return;
     var response = [];

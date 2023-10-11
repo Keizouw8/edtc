@@ -1,0 +1,32 @@
+<script>
+	var channels = [
+		{
+			title: "Every Day Television Client",
+			async search(){
+				return [{
+					id: 1,
+					title: "YouTube",
+					subtitle: "Broadcast Yourself",
+					image: "/static/youtube.png"
+				}]
+			},
+			functionality(id){
+				channel = id;
+				document.getElementById("search").value = "";
+				document.querySelector("search").setAttribute("collapsed", "true");
+				updateContent();
+			}
+		},
+		{
+			title: "YouTube",
+			async search(query){
+				var response = await fetch(`/yt?query=${query}`, {
+					method: "POST",
+				});
+				var videos = await response.json();
+				return videos;
+			},
+			functionality(id){}
+		}
+	];
+</script>
