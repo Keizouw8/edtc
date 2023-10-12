@@ -17,7 +17,7 @@
 		setTimeout(function(){
 			typing--;
 			if(!typing) updateContent();
-		}, 300)
+		}, 300);
 	}
 
 	function setPosition(x, y){
@@ -44,6 +44,7 @@
 			card.id = `c${cards[i].id}`;
 			card.classList.add("selectable", "nohover");
 			var img = document.createElement("img");
+			img.onload = ((img) => () => img.style.opacity = "1" )(img);
 			img.src = cards[i].image;
 			var title = document.createElement("text");
 			title.innerText = cards[i].title;

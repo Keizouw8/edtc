@@ -232,6 +232,7 @@
 		background: var(--fourth);
 		width: 18.5vw;
 		height: 15vw;
+		animation: 0.5s fadein;
 	}
 
 	content > container > card > img{
@@ -242,7 +243,21 @@
 		width: 18.5vw;
 		height: calc(333vw / 32);
 		background: white;
+		transition: opacity 0.5s;
 	}
+
+	content > container > card > img{
+		position: absolute;
+		top: 0;
+		left: 0;
+		object-fit: cover;
+		width: 18.5vw;
+		height: calc(333vw / 32);
+		background: white;
+		transition: opacity 0.5s;
+		opacity: 0;
+	}
+
 	content > container > card > text {
 		position: absolute;
 		top: calc(357vw / 32);
@@ -359,5 +374,14 @@
 
 	volume[show="0"]{
 		opacity: 0;
+	}
+
+	@keyframes fadein{
+		0%{
+			opacity: 0;
+		}
+		100%{
+			opacity: 1;
+		}
 	}
 </style>
