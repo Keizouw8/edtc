@@ -1,9 +1,12 @@
+require("dotenv").config();
+
 const express = require("express");
 const Scraper = require('@yimura/scraper').default;
 
 const youtube = new Scraper();
 var app = express();
 app.set("view engine", "ejs");
+app.locals = process.env;
 
 app.use("/static", express.static("./static"));
 app.post("/yt", async function(req, res){
@@ -23,4 +26,4 @@ app.get("*", function(req, res){
     res.render("index");
 });
 
-app.listen(8080);
+app.listen(process.env.PORT || 8080);

@@ -106,6 +106,10 @@
 			}else{
 				document.getElementById("search").value = "";
 			}
+			if(caps == 1){
+				caps--;
+				drawKeys();
+			}
 			updateContent();
 		},
 		search: () => document.getElementById("search").focus(),

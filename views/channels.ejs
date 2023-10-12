@@ -1,3 +1,4 @@
+<script src="https://apis.google.com/js/api.js"></script>
 <script>
 	var channels = [
 		{
@@ -18,12 +19,20 @@
 			}
 		},
 		{
+			api_key: "<%= locals.YT_API_KEY %>",
 			title: "YouTube",
 			async search(query){
-				var response = await fetch(`/yt?query=${query}`, {
-					method: "POST",
-				});
-				var videos = await response.json();
+				var url = `https://www.googleapis.com/youtube/v3/search?key=${api}&type=video&part=snippet&q=${query}&maxResults=25`;
+				var res = await fetch(url).then((res) => res.json());
+				var videos = [];
+				for(var i = 0; i < res.items.length; i++){
+					videos.push({
+						id: res.items[i].id.videoId,
+						title: res.items[i].snippet.title,
+						subtitle: res.items[i].snippet.channelTitle,
+						image: res.items[i].snippet.thumbnails.high.url
+					});
+				}
 				return videos;
 			},
 			functionality(id){}
