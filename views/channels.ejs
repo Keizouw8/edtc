@@ -39,7 +39,7 @@
 			async paginate(){
 				var url = `https://www.googleapis.com/youtube/v3/search?key=${this.api_key}&type=video&part=snippet&q=${nextPageToken[0]}&pageToken=${nextPageToken[1]}&maxResults=25`;
 				var res = await fetch(url).then((res) => res.json());
-				nextPageToken[1] = res.nextPageToken;
+				nextPageToken = [nextPageToken[0], res.nextPageToken];
 				return this.process(res);
 			},
 			functionality(id){
@@ -60,7 +60,7 @@
 					},
 					events: {
 						onReady(event) {
-							event.target.setVolume(volume);
+							event.target.setVolume(muted ? 0 : volume);
 							event.target.playVideo();
 						}
 					}
@@ -69,7 +69,7 @@
 				document.querySelector("vid").setAttribute("active", 1);
 			},
 			setVolume(){
-				this.player.setVolume(volume);
+				this.player.setVolume(muted ? 0 : volume);
 			},
 			pauseplay(state){
 				state ? this.player.pauseVideo() : this.player.playVideo();

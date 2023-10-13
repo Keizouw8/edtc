@@ -10,6 +10,18 @@
 			return;
 		}
 
+		if(event.button == 1){
+			muted = 1-muted;
+			document.querySelector("volume").setAttribute("show", "1");
+			document.querySelector("volume").setAttribute("muted", muted);
+			if(setVolume) clearTimeout(setVolume);
+			setVolume = setTimeout(function(){
+				document.querySelector("volume").setAttribute("show", "0");
+				setVolume = false;
+			}, 1000);
+			if(watching) channels[channel].setVolume();
+			return;
+		}
 		if(event.button == 2) return;
 		var elem = document.elementFromPoint(...cursorPosition);
 		if(!elem?.classList?.contains("selectable")) return document.querySelectorAll("input").forEach((e) => e.blur());
@@ -69,6 +81,7 @@
 		if(!focused) return;
 		var elem = document.getElementById(document.elementFromPoint(...cursorPosition).id);
 		if(!elem?.classList?.contains("selectable")) return;
+		if(event.button == 1) return;
 		if(event.button == 2 && !watching){
 			scrolling = true;
 			document.body.addEventListener("mouseup", function(){
@@ -85,11 +98,13 @@
 
 	document.body.addEventListener("wheel", function(event){
 		if(!focused) return;
+		muted = 0;
 		volume = Math.max(0, Math.min(100, volume - event.deltaY/50));
 		if(watching) channels[channel].setVolume();
 		document.querySelector("volume").style.setProperty("--volume", volume);
 		document.querySelector("volume > text").innerText = parseInt(volume);
 		document.querySelector("volume").setAttribute("show", "1");
+		document.querySelector("volume").setAttribute("muted", "0");
 		if(setVolume) clearTimeout(setVolume);
 		setVolume = setTimeout(function(){
 			document.querySelector("volume").setAttribute("show", "0");

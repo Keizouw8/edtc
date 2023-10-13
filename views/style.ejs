@@ -342,12 +342,13 @@
 		z-index: 102;
 	}
 
-	volume > text {
+	volume > text{
 		position: absolute;
 		bottom: 1.5vw;
 		left: 50%;
 		transform: translateX(-50%);
 		font-size: 1.5vw;
+		opacity: 1;
 	}
 
 	volume > bar{
@@ -355,7 +356,7 @@
 		background: rgb(100, 100, 100);
 		transform: translateX(-50%);
 		left: 50%;
-		top: 3vw;
+		bottom: 4.5vw;
 		height: 17.5vw;
 		width: 0.3vw;
 		overflow: visible;
@@ -369,7 +370,15 @@
 		height: calc(1% * var(--volume));
 		background: var(--tertiary);
 		overflow: visible;
-		transition: 0.1s;
+		transition: height 0.1s, background 0.3s;
+	}
+
+	volume[muted="1"] > bar > filled, volume[muted="1"] > bar > filled > end{
+		background: rgb(100, 100, 100);
+	}
+
+	volume[muted="1"]{
+		height: 27vw;
 	}
 
 	volume > bar > filled > end{
@@ -381,9 +390,23 @@
 		height: 1vw;
 		border-radius: 50%;
 		background: var(--tertiary);
+		transition: 0.3s;
+	}
+	
+	volume > i{
+		transition: 0.3s;
+		position: absolute;
+		top: 1.5vw;
+		left: 50%;
+		transform: translateX(-50%);
+		font-size: 2vw;
 	}
 
 	volume[show="0"]{
+		opacity: 0;
+	}
+
+	volume[muted="0"] > i{
 		opacity: 0;
 	}
 
