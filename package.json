@@ -1,15 +1,5 @@
 {
-  "name": "edtc",
-  "module": "index.js",
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
   "dependencies": {
-    "@yimura/scraper": "^1.2.4",
-    "daytona": "github:madumcc/daytona",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2"

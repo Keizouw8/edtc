@@ -54,7 +54,7 @@
 		--width: 4vh;
 		--height: 4vh;
 		--border-radius: 50%;
-		transition: all 0s, border-radius 0.2s, width 0.2s, height 0.2s, --gradient-inner var(--gradient-speed) linear, --gradient-outer var(--gradient-speed) linear, --gradient-x var(--gradient-speed) linear, --gradient-y var(--gradient-speed) linear;
+		transition: all 0s, opacity 0.5s, border-radius 0.2s, width 0.2s, height 0.2s, --gradient-inner var(--gradient-speed) linear, --gradient-outer var(--gradient-speed) linear, --gradient-x var(--gradient-speed) linear, --gradient-y var(--gradient-speed) linear;
 		background: radial-gradient(farthest-corner at var(--gradient-x) var(--gradient-y), var(--gradient-inner), var(--gradient-outer));
 		position: absolute;
 		transform: translate(-50%, -50%);
@@ -62,7 +62,7 @@
 		width: var(--width);
 		border-radius: var(--border-radius);
 		border: 0.4vh white solid;
-		z-index: 101;
+		z-index: 103;
 	}
 
 	header{
@@ -276,6 +276,16 @@
 		color: rgb(200, 200, 200);
 		white-space:nowrap;
 	}
+
+	content > container > load{
+		animation: 0.3s fadein;
+		display: block;
+		position: relative;
+		margin: 0.4vw;
+		height: 10vw;
+		width: calc(100% - 0.8vw);
+	}
+
 	.lds-ring {
 		position: absolute;
 		top: 50%;
@@ -329,6 +339,7 @@
 		background: rgba(25, 25, 25, 0.9);
 		border-radius: 0.3vw;
 		opacity: 1;
+		z-index: 102;
 	}
 
 	volume > text {
@@ -383,5 +394,94 @@
 		100%{
 			opacity: 1;
 		}
+	}
+	vid{
+		position: absolute;
+		background-color: rgb(20, 20, 20);
+		width: 100vw;
+		height: 100vw;
+		top: 0;
+		left: 0;
+		z-index: 101;
+		transition: 0.3s;
+		pointer-events: none;
+		opacity: 0;
+	}
+	vid[active="1"]{
+		pointer-events: all;
+		opacity: 1;
+	}
+	vid > iframe{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	vid > controls{
+		transition: opacity 0.3s;
+		opacity: 1;
+		position: absolute;
+		left: 0;
+		top: calc(100vh - 7vw);
+		width: 100vw;
+		height: 7vw;
+		background: rgba(25, 25, 25, 0.9);
+		z-index: 90;
+	}
+
+	vid > controls[active="0"]{
+		opacity: 0;
+	}
+
+	body:has(> vid > controls[active="0"]) > cursor{
+		opacity: 0;
+	}
+
+	vid > controls > pause{
+		background: var(--tertiary);
+		position: absolute;
+		left: 2vw;
+		top: 2vw;
+		width: 3vw;
+		height: 3vw;
+		border-radius: 0.3vw;
+	}
+
+	vid > controls > pause > i{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 1.5vw;
+		background: var(--tertiary);
+		opacity: 1;
+		transition: opacity 0.3s;
+	}
+	vid > controls > pause > i[active="0"]{
+		opacity: 0;
+	}
+
+	vid > controls > close{
+		background: var(--tertiary);
+		position: absolute;
+		right: 2vw;
+		top: 2vw;
+		width: 3vw;
+		height: 3vw;
+		border-radius: 0.3vw;
+	}
+
+	vid > controls > close > i{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-size: 1.5vw;
+	}
+
+	iframe{
+		transition: opacity 0.3s;
 	}
 </style>

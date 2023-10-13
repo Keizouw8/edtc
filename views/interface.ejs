@@ -1,6 +1,8 @@
 <script>
 	document.body.append(cursor);
 
+	document.querySelector("input#search").addEventListener("change", updateSearch);
+
 	document.body.addEventListener("click", async function(event){
 		if(!focused){
 			await document.body.requestPointerLock();
@@ -16,11 +18,29 @@
 		if(functions[elem.id]) functions[elem.id]();
 	});
 
-	document.body.addEventListener("mousemove", function(event){
+	document.body.addEventListener("mousemove", async function(event){
 		if(!focused) return;
+
+		if(watching){
+			document.querySelector("vid > controls").setAttribute("active", "1");
+			if(controlsHide) clearTimeout(controlsHide);
+			controlsHide = setTimeout(function(){
+				document.querySelector("vid > controls").setAttribute("active", "0");
+			}, 1000);
+		}
+
 		if(scrolling){
 			document.querySelector("content > container").scrollTop += event.movementY;
 			document.querySelector("content > container").scrollLeft += event.movementX;
+			if(document.querySelector("content > container").scrollTop + document.querySelector("content > container").clientHeight < document.querySelector("content > container").scrollHeight || paginating || !nextPageToken) return;
+			paginating = true;
+			var load = document.createElement("load");
+			load.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
+			document.querySelector("content > container").appendChild(load);
+			var cards = await channels[channel].paginate();
+			load.remove();
+			updateContent(cards, true);
+			paginating = false;
 			return;
 		}
 
@@ -49,7 +69,7 @@
 		if(!focused) return;
 		var elem = document.getElementById(document.elementFromPoint(...cursorPosition).id);
 		if(!elem?.classList?.contains("selectable")) return;
-		if(event.button == 2){
+		if(event.button == 2 && !watching){
 			scrolling = true;
 			document.body.addEventListener("mouseup", function(){
 				scrolling = false;
@@ -66,6 +86,7 @@
 	document.body.addEventListener("wheel", function(event){
 		if(!focused) return;
 		volume = Math.max(0, Math.min(100, volume - event.deltaY/50));
+		if(watching) channels[channel].setVolume();
 		document.querySelector("volume").style.setProperty("--volume", volume);
 		document.querySelector("volume > text").innerText = parseInt(volume);
 		document.querySelector("volume").setAttribute("show", "1");
@@ -100,7 +121,7 @@
 			drawKeys();
 		},
 		k43: generateKeyFunction(" "),
-		k44: () => {
+		k44(){
 			if(!caps){
 				document.getElementById("search").value = document.getElementById("search").value.slice(0, -1);
 			}else{
@@ -114,10 +135,25 @@
 		},
 		search: () => document.getElementById("search").focus(),
 		toggle: () => document.querySelector("search").setAttribute("collapsed", Boolean(1 - (document.querySelector("search").getAttribute("collapsed") == "true")).toString()),
-		home: () => {
+		home(){
 			channel = 0;
+			loading = 0;
+			nextPageToken = false;
+			paginating = false;
 			document.getElementById("search").value = "";
 			updateContent();
+		},
+		pauseplay(){
+			var play = document.querySelector("vid > controls > pause > i.fa-play");
+			play.setAttribute("active", 1 - parseInt(play.getAttribute("active")));
+			channels[channel].pauseplay(parseInt(play.getAttribute("active")));
+		},
+		close(){
+			channels[channel].close();
+			watching = false;
+			document.querySelector("vid").setAttribute("active", "0");
+			document.querySelector("vid > controls").setAttribute("active", "1");
+			setTimeout(() => document.querySelector("vid > controls").setAttribute("active", "1"), 1000)
 		}
 	}
 

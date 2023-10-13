@@ -13,11 +13,11 @@
 	}
 
 	function updateSearch(){
-		typing++;
-		setTimeout(function(){
-			typing--;
-			if(!typing) updateContent();
-		}, 300);
+		if(typing) clearTimeout(typing);
+		typing = setTimeout(function(){
+			typing = false;
+			updateContent();
+		}, 1000);
 	}
 
 	function setPosition(x, y){
@@ -32,14 +32,14 @@
 		keyelems[44].innerHTML = ['<i class="fa-solid fa-delete-left"></i>', '<i class="fa-solid fa-trash"></i>', '<i class="fa-solid fa-trash"></i>'][caps]
 	}
 
-	async function updateContent(){
+	async function updateContent(cards, preserve){
 		loading++;
 		document.querySelector(".lds-ring").setAttribute("active", "1");
 		document.querySelector("header > h1.title").innerText = channels[channel].title;
-		document.querySelector("content > container").innerHTML = "";
-		var cards = await channels[channel].search(document.getElementById("search").value);
+		if(!preserve) document.querySelector("content > container").innerHTML = "";
+		if(!cards) cards = await channels[channel].search(document.getElementById("search").value);
 		for(var i = 0; i < cards.length; i++){
-			functions[`c${cards[i].id}`] = generateCardFunction(channels[channel].functionality, cards[i].id);
+			functions[`c${cards[i].id}`] = generateCardFunction(channels[channel], cards[i].id);
 			var card = document.createElement("card");
 			card.id = `c${cards[i].id}`;
 			card.classList.add("selectable", "nohover");
@@ -47,7 +47,7 @@
 			img.onload = ((img) => () => img.style.opacity = "1" )(img);
 			img.src = cards[i].image;
 			var title = document.createElement("text");
-			title.innerText = cards[i].title;
+			title.innerHTML = cards[i].title;
 			if(cards[i].subtitle) title.innerHTML += `: <subtitle>${cards[i].subtitle}</subtitle>`;
 
 			card.appendChild(img);
@@ -57,7 +57,7 @@
 		if(!--loading) document.querySelector(".lds-ring").setAttribute("active", "0");
 	}
 
-	function generateCardFunction(functionality, id){
-		return () => functionality(id);
+	function generateCardFunction(channel, id){
+		return () => channel.functionality(id);
 	}
 </script>

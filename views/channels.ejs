@@ -1,41 +1,100 @@
-<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://www.youtube.com/player_api"></script>
 <script>
 	var channels = [
 		{
 			title: "Every Day Television Client",
 			async search(){
+				nextPageToken = false;
 				return [{
 					id: 1,
 					title: "YouTube",
 					subtitle: "Broadcast Yourself",
-					image: "/static/youtube.png"
-				}]
+					image: "/static/youtube.png",
+				}];
+			},
+			async paginate(){
+				nextPageToken = false;
+				return [];
 			},
 			functionality(id){
 				channel = id;
 				document.getElementById("search").value = "";
 				document.querySelector("search").setAttribute("collapsed", "true");
 				updateContent();
-			}
+			},
+			setVolume(){},
+			pauseplay(){},
+			close(){}
 		},
 		{
 			api_key: "<%= locals.YT_API_KEY %>",
 			title: "YouTube",
+			player: false,
 			async search(query){
-				var url = `https://www.googleapis.com/youtube/v3/search?key=${api}&type=video&part=snippet&q=${query}&maxResults=25`;
+				var url = `https://www.googleapis.com/youtube/v3/search?key=${this.api_key}&type=video&part=snippet&q=${query}&maxResults=25`;
 				var res = await fetch(url).then((res) => res.json());
-				var videos = [];
+				nextPageToken = [query, res.nextPageToken];
+				return this.process(res);
+			},
+			async paginate(){
+				var url = `https://www.googleapis.com/youtube/v3/search?key=${this.api_key}&type=video&part=snippet&q=${nextPageToken[0]}&pageToken=${nextPageToken[1]}&maxResults=25`;
+				var res = await fetch(url).then((res) => res.json());
+				nextPageToken[1] = res.nextPageToken;
+				return this.process(res);
+			},
+			functionality(id){
+				watching = true;
+				var ytplayer = document.createElement("div");
+				ytplayer.id = "ytplayer";
+				document.querySelector("vid").appendChild(ytplayer);
+
+				this.player = new YT.Player("ytplayer", {
+					height: "360",
+					width: "640",
+					videoId: id,
+					playerVars: {
+						rel: 0,
+						controls: 0,
+						enablejsapi: 1,
+						origin: "<%= locals.domain || 'localhost' %>"
+					},
+					events: {
+						onReady(event) {
+							event.target.setVolume(volume);
+							event.target.playVideo();
+						}
+					}
+				});
+
+				document.querySelector("vid").setAttribute("active", 1);
+			},
+			setVolume(){
+				this.player.setVolume(volume);
+			},
+			pauseplay(state){
+				state ? this.player.pauseVideo() : this.player.playVideo();
+			},
+			close(){
+				this.player.g.style.opacity = 0;
+				var that = this;
+				setTimeout(function(){
+					that.player.g.remove();
+					delete that.player;
+					that.player = false;
+				}, 300);
+			},
+			process(res){
+				var content = [];
 				for(var i = 0; i < res.items.length; i++){
-					videos.push({
+					content.push({
 						id: res.items[i].id.videoId,
 						title: res.items[i].snippet.title,
 						subtitle: res.items[i].snippet.channelTitle,
 						image: res.items[i].snippet.thumbnails.high.url
 					});
 				}
-				return videos;
-			},
-			functionality(id){}
+				return content;
+			}
 		}
 	];
 </script>
