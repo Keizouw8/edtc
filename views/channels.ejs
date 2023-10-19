@@ -1,5 +1,6 @@
 <script src="https://www.youtube.com/player_api"></script>
 <script>
+	var youtubeKeys = [<% for(var i = 0; i < locals.YT_API_KEYS.split(",").length;i++){ %> "<%= locals.YT_API_KEYS.split(",")[i] %>", <% } %>];
 	var channels = [
 		{
 			title: "Every Day Television Client",
@@ -27,19 +28,31 @@
 			close(){}
 		},
 		{
-			api_key: "<%= locals.YT_API_KEY %>",
+			api_key: 0,
 			title: "YouTube",
 			player: false,
+			query(query, npt){
+				var that = this;
+				var url = `https://www.googleapis.com/youtube/v3/search?key=${youtubeKeys[this.api_key]}&type=video&part=snippet&maxResults=25&q=${query}`;
+				if(npt) url += `&pageToken=${npt}`;
+				return new Promise(async function(resolve, reject){
+					var res = await fetch(url);
+					if(res.status >= 300){
+						that.api_key++;
+						var newiter = await that.query(query, npt);
+						return resolve(newiter);
+					}
+					res = await res.json();
+					nextPageToken = [query, res.nextPageToken];
+					resolve(res);
+				});
+			},
 			async search(query){
-				var url = `https://www.googleapis.com/youtube/v3/search?key=${this.api_key}&type=video&part=snippet&q=${query}&maxResults=25`;
-				var res = await fetch(url).then((res) => res.json());
-				nextPageToken = [query, res.nextPageToken];
+				var res = await this.query(query);
 				return this.process(res);
 			},
 			async paginate(){
-				var url = `https://www.googleapis.com/youtube/v3/search?key=${this.api_key}&type=video&part=snippet&q=${nextPageToken[0]}&pageToken=${nextPageToken[1]}&maxResults=25`;
-				var res = await fetch(url).then((res) => res.json());
-				nextPageToken = [nextPageToken[0], res.nextPageToken];
+				var res = await this.query(...nextPageToken);
 				return this.process(res);
 			},
 			functionality(id){

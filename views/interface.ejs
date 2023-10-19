@@ -44,7 +44,7 @@
 		if(scrolling){
 			document.querySelector("content > container").scrollTop += event.movementY;
 			document.querySelector("content > container").scrollLeft += event.movementX;
-			if(document.querySelector("content > container").scrollTop + document.querySelector("content > container").clientHeight < document.querySelector("content > container").scrollHeight || paginating || !nextPageToken) return;
+			if(document.querySelector("content > container").scrollTop + document.querySelector("content > container").clientHeight < document.querySelector("content > container").scrollHeight - 1 || paginating || !nextPageToken) return;
 			paginating = true;
 			var load = document.createElement("load");
 			load.innerHTML = '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
