@@ -1,6 +1,6 @@
 <script src="https://www.youtube.com/player_api"></script>
 <script>
-	var youtubeKeys = [<% for(var i = 0; i < locals.YT_API_KEYS.split(",").length;i++){ %> "<%= locals.YT_API_KEYS.split(",")[i] %>", <% } %>];
+	var youtubeKeys = "<%= locals.YT_API_KEYS %>".split(",");
 	var channels = [
 		{
 			title: "Every Day Television Client",
